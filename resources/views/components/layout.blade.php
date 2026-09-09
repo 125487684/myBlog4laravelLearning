@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ $title ?? __('My blogs') }}</title>
@@ -23,6 +23,16 @@
                 <a href="{{ route('login') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Log in') }}</a>
                 <a href="{{ route('register') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Register') }}</a>
             @endauth
+            <div class="flex items-center rounded-lg border border-gray-300 bg-white overflow-hidden text-sm font-medium" role="group" aria-label="Language">
+                @foreach (['en' => 'EN', 'zh' => '中文'] as $code => $label)
+                    @if (app()->getLocale() === $code)
+                        <span class="px-2.5 py-1 bg-gray-900 text-white" aria-current="true">{{ $label }}</span>
+                    @else
+                        <a href="{{ route('language.switch', $code) }}"
+                            class="px-2.5 py-1 text-gray-600 hover:bg-gray-100">{{ $label }}</a>
+                    @endif
+                @endforeach
+            </div>
         </div>
     </div>
 </nav>
