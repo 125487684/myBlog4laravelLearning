@@ -12,14 +12,14 @@
         <div class="text-gray-700 leading-relaxed whitespace-pre-line">{{ $post->body }}</div>
 
         @can('update', $post)
-            <div class="mt-6 pt-6 border-t border-gray-100 flex gap-6">
+            <div class="mt-6 pt-6 border-t border-gray-100 flex items-center gap-6">
                 <a href="{{ route('posts.edit', $post) }}"
-                   class="text-sm font-medium text-blue-600 hover:underline">{{ __('Edit') }}</a>
+                   class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Edit') }}</a>
                 <form method="POST" action="{{ route('posts.destroy', $post) }}"
                       onsubmit="return confirm('{{ __('Confirm to delete?') }}')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                    <button type="submit" class="inline-flex h-8 items-center text-sm font-medium text-red-600 hover:text-red-800">
                         {{ __('Delete') }}
                     </button>
                 </form>

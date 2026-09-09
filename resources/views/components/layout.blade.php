@@ -12,16 +12,16 @@
         <div class="flex items-center gap-4">
             @auth
                 <a href="{{ route('posts.create') }}"
-                    class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">{{ __('Write article') }}</a>
+                    class="leading-8 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">{{ __('Write article') }}</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-sm text-gray-500 hover:text-gray-700">
+                    <button type="submit" class="inline-flex h-8 items-center text-sm text-gray-500 hover:text-gray-700">
                         {{ __('Log out') }} ({{ auth()->user()->name }})
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="text-sm font-medium text-blue-600 hover:underline">{{ __('Log in') }}</a>
-                <a href="{{ route('register') }}" class="text-sm font-medium text-blue-600 hover:underline">{{ __('Register') }}</a>
+                <a href="{{ route('login') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Log in') }}</a>
+                <a href="{{ route('register') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Register') }}</a>
             @endauth
         </div>
     </div>
