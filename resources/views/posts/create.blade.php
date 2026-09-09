@@ -1,19 +1,13 @@
-
 <x-layout>
-    <x-slot name="title"> create </x-slot>
+    <x-slot name="title">{{ __('Create') }}</x-slot>
 
-    <h1>new article</h1>
-    @if ($errors->any())
-        <div style="color: red">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    <form method="POST" action="{{ route('posts.store') }}">
-        @csrf
-        @include('posts._form')
-    </form>
+    <div class="max-w-2xl">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Create') }}</h1>
+
+        <form method="POST" action="{{ route('posts.store') }}"
+            class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            @csrf
+            @include('posts._form')
+        </form>
+    </div>
 </x-layout>
