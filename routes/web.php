@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/posts');
@@ -28,3 +29,5 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
