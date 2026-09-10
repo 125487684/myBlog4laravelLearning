@@ -2,17 +2,16 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PostTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_loggedUserCreateArticle(): void
+    public function test_logged_user_create_article(): void
     {
         // Arrange：造一个用户
         $user = User::factory()->create();
@@ -34,7 +33,7 @@ class PostTest extends TestCase
         $this->assertEquals(1, Post::count());
     }
 
-    public function test_userEditOtherArticle(): void
+    public function test_user_edit_other_article(): void
     {
         $author = User::factory()->create();
         $attacker = User::factory()->create();
@@ -50,14 +49,14 @@ class PostTest extends TestCase
         $this->assertDatabaseMissing('posts', ['slug' => 'hacked']);
     }
 
-    public function test_unloggedUserRedirectToLogin(): void
+    public function test_unlogged_user_redirect_to_login(): void
     {
         $response = $this->get('/posts/create');
 
         $response->assertRedirect(route('login'));
     }
 
-    public function test_failToEmptySubmit(): void
+    public function test_fail_to_empty_submit(): void
     {
         // Arrange
         $author = User::factory()->create();
@@ -73,7 +72,7 @@ class PostTest extends TestCase
         $response->assertSessionHasErrors(['title', 'slug', 'body']);
     }
 
-    public function test_creatSameArticle(): void
+    public function test_creat_same_article(): void
     {
         // Arrange
         $author = User::factory()->create();
@@ -95,7 +94,7 @@ class PostTest extends TestCase
         $this->assertEquals(1, Post::count());
     }
 
-    public function test_slugWithBlank(): void
+    public function test_slug_with_blank(): void
     {
         // Arrange
         $author = User::factory()->create();

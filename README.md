@@ -1,6 +1,6 @@
 # Laravel 博客（学习项目）
 
-我用来边做边学 Laravel 的个人博客。不为做成产品，只为把每个常见功能亲手写一遍：CRUD、认证、授权、分页、测试——包括所有踩过的坑。
+我使用 Laravel 实现的个人博客。
 
 ## 功能
 
@@ -54,10 +54,3 @@ npm run build    # 首次必须——测试渲染的页面含 @vite，需要 man
 composer test
 ```
 
-## 学习笔记
-
-- `latest()` 按 `created_at` 排序，同秒创建的文章顺序不确定，需要再加 `orderByDesc('id')` 作决胜键
-- 字符串断言（`assertSee`）是子串匹配，测试数据的标记必须等长——`post-01` 与 `post-10` 互不为前缀，`post-01` 与 `post-011` 则会撞车
-- Windows 没有 `pcntl` 扩展，Pail 日志工具跑不了，已从 `composer dev` 脚本移除，看日志直接读 `storage/logs/laravel.log`
-- Blade 里 `{{ $post->tile }}` 这类拼错的属性名**返回 null 而不报错**（Eloquent 魔术属性），页面表现为"安静的空白"，只能靠肉眼或测试发现
-- IDE（Intelephense）对 `auth()->id()` 报 `Undefined method 'id'` 是误报——`auth()` 的返回类型是 `Factory|Guard` 联合类型，静态分析看不到 `AuthManager` 转发；用 `Auth::id()` 既能通过又更明确
