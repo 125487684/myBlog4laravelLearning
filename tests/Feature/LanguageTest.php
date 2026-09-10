@@ -70,4 +70,24 @@ class LanguageTest extends TestCase
     {
         $this->get('/language/fr')->assertStatus(400);
     }
+
+    public function test_browser_language_is_used_for_first_visit(): void
+    {
+        $this->withHeaders(['Accept-Language' => 'zh-CN,zh;q=0.9,en;q=0.8'])
+            ->get('/posts')
+            ->assertSee('登录');
+    }
+
+    public function test_cookie_wins_over_browser_language(): void
+    {
+        $this->withHeaders(['Accept-Language' => 'zh-CN,zh;q=0.9'])
+            ->withCookie('locale', 'en')
+            ->get('/posts')
+            ->assertSee('Log in');
+    }
+
+    public function test_no_preference_falls_back_to_default(): void
+    {
+        $this->get('/posts')->assertSee('Log in');
+    }
 }
