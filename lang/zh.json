@@ -34,5 +34,6 @@
     "Profile": "个人资料",
     "Current password": "当前密码",
     "New password": "新密码",
-    "The new password must be different from the current password.": "新密码不能与当前密码相同。"
+    "The new password must be different from the current password.": "新密码不能与当前密码相同。",
+    "Too many login attempts. Please try again in :seconds seconds.": "登录尝试次数过多，请 :seconds 秒后再试。"
 }

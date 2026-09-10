@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class UserTest extends TestCase
 {
@@ -19,5 +20,22 @@ class UserTest extends TestCase
         ])->assertInvalid('name');
 
         $this->assertDatabaseCount('users', 0);
+    }
+
+    public function test_login_is_throttled_after_five_failure(): void
+    {
+        $user = User::factory()->create();
+
+        foreach (range(1, 5) as $i) {
+            $this->post('/login', [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect()->assertSessionHasErrors('email');
     }
 }
