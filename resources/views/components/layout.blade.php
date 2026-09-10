@@ -10,19 +10,6 @@
     <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <a href="{{ route('posts.index') }}" class="text-lg font-bold text-gray-900">{{ __('List') }}</a>
         <div class="flex items-center gap-4">
-            @auth
-                <a href="{{ route('posts.create') }}"
-                    class="leading-8 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">{{ __('Write article') }}</a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex h-8 items-center text-sm text-gray-500 hover:text-gray-700">
-                        {{ __('Log out') }} ({{ auth()->user()->name }})
-                    </button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Log in') }}</a>
-                <a href="{{ route('register') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Register') }}</a>
-            @endauth
             <div class="flex items-center rounded-lg border border-gray-300 bg-white overflow-hidden text-sm font-medium" role="group" aria-label="Language">
                 @foreach (['en' => 'EN', 'zh' => '中文'] as $code => $label)
                     @if (app()->getLocale() === $code)
@@ -33,11 +20,38 @@
                     @endif
                 @endforeach
             </div>
+            @auth
+                <a href="{{ route('posts.create') }}"
+                    class="leading-8 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">{{ __('Write article') }}</a>
+                <details class="relative">
+                    <summary class="inline-flex h-8 items-center gap-1 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-sm text-gray-600 hover:text-gray-900 select-none">
+                        <span class="max-w-[10rem] truncate">{{ auth()->user()->name }}</span>
+                        <span class="text-xs text-gray-400">▾</span>
+                    </summary>
+                    <div class="absolute right-0 mt-2 w-full min-w-max bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-10">
+                        <a href="{{ route('settings.edit') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">{{ __('Settings') }}</a>
+                        <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 mt-1 pt-1">
+                            @csrf
+                            <button type="submit"
+                                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 whitespace-nowrap">{{ __('Log out') }}</button>
+                        </form>
+                    </div>
+                </details>
+            @else
+                <a href="{{ route('login') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Log in') }}</a>
+                <a href="{{ route('register') }}" class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Register') }}</a>
+            @endauth
         </div>
     </div>
 </nav>
 
 <main class="max-w-4xl mx-auto px-4 py-8">
+    @if (session('status'))
+        <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
+            {{ __(session('status')) }}
+        </div>
+    @endif
     {{ $slot }}
 </main>
 </body>

@@ -20,5 +20,9 @@
     "Confirm password": "确认密码",
     "Name": "用户名",
     "No account yet?": "还没有账号？",
-    "Already have an account?": "已有账号？"
+    "Already have an account?": "已有账号？",
+    "Settings": "设置",
+    "Save": "保存",
+    "Profile updated": "资料已更新",
+    "Email cannot be changed yet": "邮箱修改将在邮箱验证功能上线后开放"
 }
