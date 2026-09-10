@@ -28,7 +28,8 @@ class SetLocale
                 }
             }
         } else {
-            $locale = $request->cookie('locale');
+            $locale = $request->cookie('locale')
+                ?? $request->getPreferredLanguage(['en', 'zh']);
         }
 
         if ($locale && in_array($locale, ['en', 'zh'])) {
