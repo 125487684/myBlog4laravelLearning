@@ -19,6 +19,6 @@ class SettingsController extends Controller
 
         $request->user()->update($validated);
 
-        return redirect()->route('settings.edit')->with('status', 'Profile updated');
+        return redirect()->route('settings.edit')->with('status_profile', 'Profile updated');
     }
 }

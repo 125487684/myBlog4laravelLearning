@@ -47,12 +47,29 @@
 </nav>
 
 <main class="max-w-4xl mx-auto px-4 py-8">
-    @if (session('status'))
-        <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-            {{ __(session('status')) }}
-        </div>
-    @endif
     {{ $slot }}
 </main>
+
+@if (session('status'))
+    <div id="flash-toast"
+        class="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 shadow-lg transition-all duration-500">
+        {{ __(session('status')) }}
+    </div>
+
+    <script>
+        (function () {
+            const toast = document.getElementById('flash-toast');
+
+            setTimeout(function () {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(0.5rem)';
+                // 等淡出动画播完再把节点从 DOM 移除，避免残留一个透明的空盒子
+                setTimeout(function () {
+                    toast.remove();
+                }, 500);
+            }, 5000);
+        })();
+    </script>
+@endif
 </body>
 </html>

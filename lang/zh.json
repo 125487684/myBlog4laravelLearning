@@ -30,5 +30,9 @@
     "Reset password": "重置密码",
     "Password updated": "密码已更新",
     "Resend in :s seconds": ":s 秒后可重发",
+    "Change password": "修改密码",
+    "Profile": "个人资料",
+    "Current password": "当前密码",
+    "New password": "新密码",
     "The new password must be different from the current password.": "新密码不能与当前密码相同。"
 }
