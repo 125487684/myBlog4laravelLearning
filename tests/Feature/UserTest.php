@@ -7,10 +7,9 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     use RefreshDatabase;
 
-    public function test_userRegisterNameLongerThan20(): void
+    public function test_user_register_name_longer_than20(): void
     {
         $this->post('/register', [
             'name' => str_repeat('a', 21),
