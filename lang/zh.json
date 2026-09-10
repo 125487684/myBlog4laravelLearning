@@ -24,5 +24,15 @@
     "Settings": "设置",
     "Save": "保存",
     "Profile updated": "资料已更新",
-    "Email cannot be changed yet": "邮箱修改将在邮箱验证功能上线后开放"
+    "Email cannot be changed yet": "邮箱修改将在邮箱验证功能上线后开放",
+    "Forgot password?": "忘记密码？",
+    "Send password reset link": "发送重置密码链接",
+    "Reset password": "重置密码",
+    "Password updated": "密码已更新",
+    "Resend in :s seconds": ":s 秒后可重发",
+    "Change password": "修改密码",
+    "Profile": "个人资料",
+    "Current password": "当前密码",
+    "New password": "新密码",
+    "The new password must be different from the current password.": "新密码不能与当前密码相同。"
 }
