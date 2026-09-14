@@ -86,4 +86,20 @@ class EmailVerificationTest extends TestCase
 
         $this->assertNull($owner->fresh()->email_verified_at);
     }
+
+    public function test_unverified_user_connot_create_post(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)->get('/posts/create')
+            ->assertRedirect(route('verification.notice'));
+
+        $this->actingAs($user)->post('/posts', [
+            'title' => 'test title',
+            'slug' => 'test-slug',
+            'body' => 'test body',
+        ])->assertRedirect(route('verification.notice'));
+
+        $this->assertDatabaseCount('posts', 0);
+    }
 }
