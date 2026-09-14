@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PostController;
@@ -25,6 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
+
+    Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
 });
 
 Route::middleware('guest')->group(function () {

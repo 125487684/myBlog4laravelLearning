@@ -3,6 +3,7 @@
 return [
     // 规则消息模板：:attribute 会被替换为下方 attributes 里映射的中文名
     'required' => ':attribute不能为空。',
+    'unique' => ':attribute已被占用。',
     'confirmed' => ':attribute两次输入不一致。',
     'min' => [
         'string' => ':attribute至少 :min 个字符。',
