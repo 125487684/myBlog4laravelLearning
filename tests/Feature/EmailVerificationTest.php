@@ -69,4 +69,21 @@ class EmailVerificationTest extends TestCase
 
         $this->get($this->signedUrl($user))->assertRedirect('/login');
     }
+
+    public function test_valid_link_of_anothor_user_is_rejected(): void
+    {
+        $owner = User::factory()->unverified()->create();
+        $other = User::factory()->create();
+
+        $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(60), [
+            'id' => $owner->getKey(),
+            'hash' => sha1($owner->getEmailForVerification()),
+        ]);
+
+        $this->actingAs($other)->get($url)
+            ->assertRedirect(route('verification.notice'))
+            ->assertSessionHas('error');
+
+        $this->assertNull($owner->fresh()->email_verified_at);
+    }
 }

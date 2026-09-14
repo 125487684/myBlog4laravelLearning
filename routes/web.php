@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\EmailVerificationStatusController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -26,6 +29,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
+
+    Route::get('/email/verify', EmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::post('/email/verification-notification', EmailVerificationNotificationController::class)
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('/email/verify/status', EmailVerificationStatusController::class)
+        ->name('verification.status');
 
     Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])

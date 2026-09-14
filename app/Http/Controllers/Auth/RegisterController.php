@@ -23,6 +23,6 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('posts.index');
+        return redirect()->route('verification.notice');
     }
 }

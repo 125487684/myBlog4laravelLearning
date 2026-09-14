@@ -35,5 +35,11 @@
     "Current password": "当前密码",
     "New password": "新密码",
     "The new password must be different from the current password.": "新密码不能与当前密码相同。",
-    "Too many login attempts. Please try again in :seconds seconds.": "登录尝试次数过多，请 :seconds 秒后再试。"
+    "Too many login attempts. Please try again in :seconds seconds.": "登录尝试次数过多，请 :seconds 秒后再试。",
+    "Verify email": "验证邮箱",
+    "Before proceeding, please check your email for a verification link.": "在继续操作前，请查看您的邮箱中的验证链接。",
+    "A fresh verification link has been sent to your email address.": "新的验证链接已发送到您的邮箱。",
+    "Resend verification email": "重新发送验证邮件",
+    "You are not the recipient of this verification link. Please log in with the correct account.": "您不是这条验证链接的收件人，请使用正确的账号登录。",
+    "Wrong email or password.": "邮箱或密码错误。"
 }
