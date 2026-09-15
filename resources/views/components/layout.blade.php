@@ -50,7 +50,8 @@
     {{ $slot }}
 </main>
 
-@if (session('status'))
+{{-- verification-link-sent 是验证提示页的专用协议键（页内绿条消费），不经全局 Toast 广播 --}}
+@if (session('status') && session('status') !== 'verification-link-sent')
     <div id="flash-toast"
         class="fixed bottom-6 right-6 z-50 max-w-sm rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 shadow-lg transition-all duration-500">
         {{ __(session('status')) }}
