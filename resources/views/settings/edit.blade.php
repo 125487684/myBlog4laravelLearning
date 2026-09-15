@@ -2,6 +2,29 @@
     <div class="max-w-2xl mx-auto">
         <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ __('Settings') }}</h1>
 
+        {{-- 页签导航：管理员可见两个页签，普通用户只见个人设置（无切换入口） --}}
+        <div class="flex items-center gap-1 mb-6 border-b border-gray-200">
+            <a href="{{ route('settings.edit') }}"
+                class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {{ $tab === 'profile' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                {{ __('Profile settings') }}
+            </a>
+            @can('admin')
+                <a href="{{ route('settings.edit', ['tab' => 'admin']) }}"
+                    class="px-4 py-2 text-sm font-medium border-b-2 -mb-px {{ $tab === 'admin' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' }}">
+                    {{ __('Admin settings') }}
+                </a>
+            @endcan
+        </div>
+
+        @if ($tab === 'admin')
+            {{-- 管理员设置：内容随 ④ 邮件配置逐步填充 --}}
+            @can('admin')
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-5">{{ __('Admin settings') }}</h2>
+                    <p class="text-sm text-gray-500">{{ __('Admin settings will appear here.') }}</p>
+                </div>
+            @endcan
+        @else
         <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-gray-900 mb-5">{{ __('Profile') }}</h2>
 
@@ -111,5 +134,6 @@
                 </div>
             </form>
         </div>
+        @endif
     </div>
 </x-layout>

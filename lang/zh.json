@@ -43,5 +43,8 @@
     "You are not the recipient of this verification link. Please log in with the correct account.": "您不是这条验证链接的收件人，请使用正确的账号登录。",
     "Wrong email or password.": "邮箱或密码错误。",
     "Verified": "已验证",
+    "Profile settings": "个人设置",
+    "Admin settings": "管理员设置",
+    "Admin settings will appear here.": "管理员功能将在此展示。",
     "Unverified — verify now": "未验证，去验证"
 }
