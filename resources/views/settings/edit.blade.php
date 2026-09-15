@@ -33,8 +33,20 @@
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Email') }}</label>
-                    <input id="email" type="email" value="{{ auth()->user()->email }}" disabled
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-500">
+                    <div class="flex items-center gap-3">
+                        <input id="email" type="email" value="{{ auth()->user()->email }}" disabled
+                            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-500">
+                        @if (auth()->user()->hasVerifiedEmail())
+                            <span class="inline-flex items-center gap-1 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 whitespace-nowrap">
+                                ✓ {{ __('Verified') }}
+                            </span>
+                        @else
+                            <a href="{{ route('verification.notice') }}"
+                                class="inline-flex items-center gap-1 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 whitespace-nowrap hover:bg-amber-100">
+                                {{ __('Unverified — verify now') }}
+                            </a>
+                        @endif
+                    </div>
                     <p class="text-xs text-gray-400 mt-1">{{ __('Email cannot be changed yet') }}</p>
                 </div>
 

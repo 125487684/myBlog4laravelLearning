@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\RateLimiter;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
@@ -52,5 +53,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function verificationCooldownRemaining(): int
+    {
+        $key = sha1('verification|'.$this->id);
+
+        return RateLimiter::attempts($key) > 0 ? RateLimiter::availableIn($key) : 0;
     }
 }

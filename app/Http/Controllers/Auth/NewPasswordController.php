@@ -38,7 +38,10 @@ class NewPasswordController extends Controller
                     ]);
                 }
 
-                $user->forceFill(['password' => $password])->setRememberToken(null);
+                $user->forceFill(['password' => $password])
+                    ->setRememberToken(null);
+
+                $user->save();
 
                 event(new PasswordReset($user));
             }

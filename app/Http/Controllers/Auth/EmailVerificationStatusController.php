@@ -12,8 +12,12 @@ class EmailVerificationStatusController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return response()->json([
-            'verified' => $request->user()->hasVerifiedEmail(),
-        ]);
+        $verified = $request->user()->hasVerifiedEmail();
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('verification.notice');
+        }
+
+        return response()->json(['verified' => $verified]);
     }
 }

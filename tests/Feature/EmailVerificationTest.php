@@ -102,4 +102,48 @@ class EmailVerificationTest extends TestCase
 
         $this->assertDatabaseCount('posts', 0);
     }
+
+    public function test_prompt_page_shows_cooldown_right_after_registeration(): void
+    {
+        Notification::fake();
+
+        $this->post('/register', [
+            'name' => 'cooler',
+            'email' => 'cooler@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->get('/email/verify')
+            ->assertSee(__('A fresh verification link has been sent to your email address.'))
+            ->assertSee(__('Resend in'));
+    }
+
+    public function test_resend_during_cooldown_is_still_allowed(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        Notification::fake();
+
+        $this->actingAs($user)->post('/email/verification-notification');
+
+        Notification::assertSentTo($user, VerifyEmail::class);
+
+        $this->actingAs($user)->post('/email/verification-notification')
+            ->assertRedirect();
+
+        Notification::assertSentTo($user, VerifyEmail::class, 2);
+    }
+
+    public function test_resend_has_a_hard_limit_of_six_per_minute(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        foreach (range(1, 6) as $i) {
+            $this->actingAs($user)->post('/email/verification-notification');
+        }
+
+        $this->actingAs($user)->post('/email/verification-notification')
+            ->assertStatus(429);
+    }
 }

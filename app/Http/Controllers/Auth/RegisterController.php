@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class RegisterController extends Controller
 {
@@ -21,8 +22,11 @@ class RegisterController extends Controller
 
         event(new Registered($user));
 
+        RateLimiter::hit(sha1('verification|'.$user->id));
+
         Auth::login($user);
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('verification.notice')
+            ->with('status', 'verification-link-sent');
     }
 }

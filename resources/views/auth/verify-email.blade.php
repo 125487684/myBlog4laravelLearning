@@ -15,7 +15,12 @@
                 {{ __('Before proceeding, please check your email for a verification link.') }}
             </p>
 
-            @if (session('status') === 'verification-link-sent')
+            @php
+                // 刚发过信（闪存）或服务端冷却期内（RateLimiter 记录），都显示已发提示
+                $justSent = session('status') === 'verification-link-sent' || ($cooldown ?? 0) > 0;
+            @endphp
+
+            @if ($justSent)
                 <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
                     {{ __('A fresh verification link has been sent to your email address.') }}
                 </div>
@@ -37,10 +42,14 @@
         </div>
     </div>
 
-    @if (session('status') === 'verification-link-sent')
+    @php
+        // 倒计时起点取两者较大值：闪存场景固定 60，冷却场景用服务端剩余秒数
+        $initialCooldown = max(session('status') === 'verification-link-sent' ? 60 : 0, $cooldown ?? 0);
+    @endphp
+    @if ($initialCooldown > 0)
         <script>
             (function () {
-                let seconds = 60;
+                let seconds = {{ $initialCooldown }};
                 const button = document.getElementById('resend-verification');
                 const label = document.getElementById('resend-verification-label');
                 const template = @json(__('Resend in :s seconds'));
