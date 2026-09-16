@@ -17,11 +17,17 @@
         </div>
 
         @if ($tab === 'admin')
-            {{-- 管理员设置：内容随 ④ 邮件配置逐步填充 --}}
+            {{-- 管理员设置：邮件服务器配置 --}}
             @can('admin')
                 <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-5">{{ __('Admin settings') }}</h2>
-                    <p class="text-sm text-gray-500">{{ __('Admin settings will appear here.') }}</p>
+                    <div class="flex items-center justify-between mb-1">
+                        <h2 class="text-lg font-semibold text-gray-900">{{ __('Admin settings') }}</h2>
+                        <a href="{{ route('mail-settings.edit') }}"
+                            class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline">
+                            {{ __('Mail settings') }} →
+                        </a>
+                    </div>
+                    <p class="text-sm text-gray-500">{{ __('Configure the SMTP server for outgoing emails.') }}</p>
                 </div>
             @endcan
         @else

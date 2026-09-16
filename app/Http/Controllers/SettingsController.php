@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SettingsController extends Controller
 {
-    public function edit()
+    public function edit(Request $request)
     {
-        return view('settings.edit');
+        $tab = $request->query('tab', 'profile');
+
+        if ($tab === 'admin' && ! Gate::allows('admin')) {
+            $tab = 'profile';
+        }
+
+        return view('settings.edit', ['tab' => $tab]);
     }
 
     public function update(Request $request)

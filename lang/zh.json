@@ -46,5 +46,19 @@
     "Profile settings": "个人设置",
     "Admin settings": "管理员设置",
     "Admin settings will appear here.": "管理员功能将在此展示。",
-    "Unverified — verify now": "未验证，去验证"
+    "Unverified — verify now": "未验证，去验证",
+    "Mail settings": "邮箱服务器设置",
+    "SMTP host": "SMTP 服务器地址",
+    "SMTP port": "SMTP 端口",
+    "Encryption": "加密方式",
+    "SMTP username": "SMTP 用户名",
+    "SMTP password": "SMTP 密码",
+    "Leave empty for local dev": "本地开发环境可留空",
+    "Leave empty to keep current password": "留空则保持当前密码不变",
+    "From address": "发件人邮箱",
+    "From name": "发件人名称",
+    "Back to settings": "返回设置",
+    "Mail settings updated.": "邮箱服务器设置已保存。",
+    "Configure the SMTP server for outgoing emails.": "配置站外发信使用的 SMTP 服务器。",
+    "local dev": "本地开发"
 }
