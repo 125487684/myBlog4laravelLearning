@@ -60,5 +60,11 @@
     "Back to settings": "返回设置",
     "Mail settings updated.": "邮箱服务器设置已保存。",
     "Configure the SMTP server for outgoing emails.": "配置站外发信使用的 SMTP 服务器。",
-    "local dev": "本地开发"
+    "local dev": "本地开发",
+    "Change email": "修改邮箱",
+    "New email": "新邮箱",
+    "Update email": "更新邮箱",
+    "Changing your email will require verifying the new address.": "修改邮箱后需要重新验证新地址。",
+    "Change email or password": "修改邮箱或密码",
+    "New email must be different from the current email.": "新邮箱不能与当前邮箱相同。"
 }

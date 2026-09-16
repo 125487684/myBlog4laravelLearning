@@ -60,9 +60,21 @@
                         class="w-full border {{ $errors->has('name') ? 'border-red-400' : 'border-gray-300' }} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 {{ $errors->has('name') ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-blue-500 focus:border-blue-500' }}">
                 </div>
 
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Email') }}</label>
-                    <div class="flex items-center gap-3">
+                <div class="flex justify-end pt-2 border-t border-gray-100">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        {{ __('Save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- 邮箱卡：当前邮箱 + 验证状态 + 修改邮箱（独立表单，禁止与姓名表单嵌套） --}}
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mt-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-5">{{ __('Email') }}</h2>
+
+            <div>
+                <div class="flex items-center gap-3 mb-3">
                         <input id="email" type="email" value="{{ auth()->user()->email }}" disabled
                             class="flex-1 border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-500">
                         @if (auth()->user()->hasVerifiedEmail())
@@ -76,16 +88,48 @@
                             </a>
                         @endif
                     </div>
-                    <p class="text-xs text-gray-400 mt-1">{{ __('Email cannot be changed yet') }}</p>
-                </div>
 
-                <div class="flex justify-end pt-2 border-t border-gray-100">
-                    <button type="submit"
-                        class="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        {{ __('Save') }}
-                    </button>
+                    {{-- 修改邮箱：独立小表单（验证当前密码 + 新邮箱）。错误挂 email 袋（validateWithBag），不与改密码卡串门 --}}
+                    {{-- 布尔属性存在即生效，{{ }} 会把 null 渲染成 open=""（恒真），必须条件输出裸属性 --}}
+                    <details class="text-sm" @if ($errors->email->any()) open @endif>
+                        <summary class="cursor-pointer select-none text-gray-500 hover:text-gray-700">{{ __('Change email') }}</summary>
+
+                        @if ($errors->email->any())
+                            <div class="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                <ul class="list-disc list-inside space-y-1">
+                                    @foreach ($errors->email->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('settings.email.update') }}" class="mt-3 space-y-4">
+                            @csrf
+                            @method('PUT')
+
+                            <div>
+                                <label for="new-email" class="block text-sm font-medium text-gray-700 mb-1">{{ __('New email') }}</label>
+                                <input id="new-email" type="email" name="email" value="{{ old('email') }}" required
+                                    class="w-full border {{ $errors->email->has('email') ? 'border-red-400' : 'border-gray-300' }} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 {{ $errors->email->has('email') ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-blue-500 focus:border-blue-500' }}"
+                                    placeholder="{{ auth()->user()->email }}">
+                            </div>
+
+                            <div>
+                                <label for="email-current-password" class="block text-sm font-medium text-gray-700 mb-1">{{ __('Current password') }}</label>
+                                <input id="email-current-password" type="password" name="current_password" required autocomplete="current-password"
+                                    class="w-full border {{ $errors->email->has('current_password') ? 'border-red-400' : 'border-gray-300' }} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 {{ $errors->email->has('current_password') ? 'focus:ring-red-500 focus:border-red-500' : 'focus:ring-blue-500 focus:border-blue-500' }}">
+                            </div>
+
+                            <p class="text-xs text-gray-400">{{ __('Changing your email will require verifying the new address.') }}</p>
+
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                {{ __('Update email') }}
+                            </button>
+                        </form>
+                    </details>
                 </div>
-            </form>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mt-6">
