@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AdminAccessTest extends TestCase
@@ -52,11 +53,41 @@ class AdminAccessTest extends TestCase
 
     public function test_seeder_creates_admin_users(): void
     {
+        config(['admin.email' => 'admin@example.com', 'admin.password' => 'secret-pass']);
+
         $this->seed(DatabaseSeeder::class);
 
         $admin = User::where('email', 'admin@example.com')->first();
 
         $this->assertNotNull($admin);
+        $this->assertTrue((bool) $admin->is_admin);
+        $this->assertTrue(Hash::check('secret-pass', $admin->password));   // 顺手锁 hashed cast
+    }
+
+    public function test_seeder_skips_admin_without_credentials(): void
+    {
+        config(['admin.email' => null, 'admin.password' => null]);
+
+        $this->seed(DatabaseSeeder::class);
+
+        $this->assertSame(0, User::where('is_admin', true)->count());
+    }
+
+    public function test_seeder_is_idempotent_for_existing_admin(): void
+    {
+        config(['admin.email' => 'admin@example.com', 'admin.password' => 'first-pass']);
+
+        $existing = User::factory()->create([
+            'email' => 'admin@example.com',
+        ]);
+        $existing->forceFill(['password' => 'manully-changed'])->save();
+
+        $this->seed(DatabaseSeeder::class);
+
+        $admin = User::where('email', 'admin@example.com')->first();
+
+        $this->assertSame($existing->id, $admin->id);
+        $this->assertTrue(Hash::check('manully-changed', $admin->password));
         $this->assertTrue((bool) $admin->is_admin);
     }
 }
