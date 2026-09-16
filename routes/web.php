@@ -23,17 +23,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
+    Route::put('/settings/email', [SettingsController::class, 'updateEmail'])
+        ->middleware('throttle:verification')
+        ->name('settings.email.update');
 
     Route::get('/email/verify', EmailVerificationPromptController::class)
         ->name('verification.notice');
-
     Route::post('/email/verification-notification', EmailVerificationNotificationController::class)
         ->middleware('throttle:verification')
         ->name('verification.send');
-
     Route::get('/email/verify/status', EmailVerificationStatusController::class)
         ->name('verification.status');
-
     Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');

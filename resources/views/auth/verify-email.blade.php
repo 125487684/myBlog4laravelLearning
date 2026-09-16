@@ -32,9 +32,14 @@
             @endif
 
             <div class="flex items-center justify-between">
-                <a href="{{ route('posts.index') }}" class="text-sm text-gray-500 hover:underline">
-                    {{ __('Back to list') }}
-                </a>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('posts.index') }}" class="text-sm text-gray-500 hover:underline">
+                        {{ __('Back to list') }}
+                    </a>
+                    <a href="{{ route('settings.edit') }}" class="text-sm text-gray-500 hover:underline">
+                        {{ __('Change email or password') }}
+                    </a>
+                </div>
 
                 <form method="POST" action="{{ route('verification.send') }}">
                     @csrf
