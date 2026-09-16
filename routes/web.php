@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MailSettingController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\EmailVerificationStatusController;
@@ -37,6 +38,14 @@ Route::middleware('auth')->group(function () {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 });
+
+Route::middleware(['auth', 'can:admin'])->group(function () {
+    Route::get('/settings/mail', [MailSettingController::class, 'edit'])
+        ->name('mail-settings.edit');
+
+    Route::put('/settings/mail', [MailSettingController::class, 'update'])
+        ->name('mail-settings.update');
+}); // 非管理员 403
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');

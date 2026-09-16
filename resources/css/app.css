@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* 滚动条轨道常驻：防止短页面（无滚动条）与长页面切换时内容居中位置左右跳动 */
+html {
+    scrollbar-gutter: stable;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

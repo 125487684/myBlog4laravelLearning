@@ -42,4 +42,14 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * create a admin user
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $user->forceFill(['is_admin' => true])->save();
+        });
+    }
 }

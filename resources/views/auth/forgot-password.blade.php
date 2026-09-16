@@ -18,12 +18,15 @@
             @php
                 // 发送成功后闪存 status 存在时启动倒计时；秒数取自节流配置，避免两处硬编码
                 $justSent = session('status') === __('passwords.sent');
+                $initialCooldown = $justSent ? config('auth.passwords.users.throttle') : 0;
             @endphp
-            <button type="submit" id="send-reset-link"
-                data-throttle="{{ config('auth.passwords.users.throttle') }}"
-                @if ($justSent) disabled @endif
+            <button type="submit"
+                data-countdown
+                data-countdown-seconds="{{ $initialCooldown }}"
+                data-countdown-label="{{ __('Send password reset link') }}"
+                data-countdown-template="{{ __('Resend in :s seconds') }}"
                 class="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600">
-                <span id="send-reset-label">{{ __('Send password reset link') }}</span>
+                <span>{{ __('Send password reset link') }}</span>
             </button>
         </form>
 
@@ -33,28 +36,4 @@
         </p>
     </div>
 
-    @if ($justSent)
-        <script>
-            (function () {
-                let seconds = parseInt(document.getElementById('send-reset-link').dataset.throttle, 10) || 60;
-                const button = document.getElementById('send-reset-link');
-                const label = document.getElementById('send-reset-label');
-                const template = @json(__('Resend in :s seconds'));
-
-                const tick = function () {
-                    if (seconds > 0) {
-                        button.disabled = true;
-                        label.textContent = template.replace(':s', seconds);
-                        seconds -= 1;
-                        setTimeout(tick, 1000);
-                    } else {
-                        button.disabled = false;
-                        label.textContent = @json(__('Send password reset link'));
-                    }
-                };
-
-                tick();
-            })();
-        </script>
-    @endif
-</x-layout>
+    </x-layout>
