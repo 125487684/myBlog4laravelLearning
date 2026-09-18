@@ -14,7 +14,7 @@ services:
       APP_ENV: production
       APP_KEY: ${APP_KEY}
       DB_CONNECTION: mysql
-      DB_HOST: blog-mysql
+      DB_HOST: mysql
       DB_PORT: "3306"
       DB_DATABASE: blog
       DB_USERNAME: blog
@@ -23,10 +23,10 @@ services:
       SESSION_DRIVER: database
       QUEUE_CONNECTION: database
     depends_on:
-      - blog-mysql
+      - mysql
     restart: unless-stopped
 
-  blog-nginx:
+  nginx:
     image: nginx:alpine
     ports:
       - "${WEB_PORT:-8080}:80"
@@ -38,7 +38,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  blog-mysql:
+  mysql:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -46,9 +46,9 @@ services:
       MYSQL_USER: blog
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - blog-mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     restart: unless-stopped
 
 volumes:
-  blog-mysql-data:
+  mysql-data:
   app-public:
