@@ -72,6 +72,61 @@ composer dev
 - **管理员**：`.env` 中取消注释 `ADMIN_EMAIL` / `ADMIN_PASSWORD` 并填值，再跑 `migrate --seed` 即建出管理员；不配则不建
 - **邮件**：本地开发推荐 [Mailpit](https://github.com/axllent/mailpit)（`MAIL_MAILER=smtp`、`MAIL_HOST=localhost`、`MAIL_PORT=1025`，Web 界面 <http://127.0.0.1:8025>）；管理员也可登录后在 设置 → 管理员设置 → 邮箱服务器设置 中配置真实 SMTP（如 QQ 邮箱授权码）
 
+## Docker 部署
+
+镜像在本地构建、导出传到服务器运行，服务器不需要源码。线上为三容器架构：**nginx**（唯一对外端口，静态资源直出）+ **php-fpm**（Laravel）+ **MySQL**（数据在具名卷，容器重建不丢）。
+
+### 服务器一次性准备（Debian）
+
+```bash
+apt update && apt upgrade -y
+curl -fsSL https://get.docker.com | sh -s -- --mirror Aliyun   # 国内镜像源安装
+# swap：内存尖峰保险（无 swap 时 OOM Killer 优先杀 mysqld）
+fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+# 云控制台安全组放行 TCP 80
+
+mkdir -p /opt/blog
+nano /opt/blog/.env
+```
+
+`/opt/blog/.env` 四行（不进 git、不进镜像，只活在服务器）：
+
+```dotenv
+APP_KEY=base64:...      # 本地 .env 那份原样复制——换 key 则加密字段和会话全部解不开
+DB_PASSWORD=强密码        # 别含 $，compose 会插值
+MYSQL_ROOT_PASSWORD=另一个强密码
+WEB_PORT=80
+```
+
+### 发布（本地 PowerShell）
+
+```powershell
+docker build -t blog-app .
+
+# 三样物料：镜像 tar + 编排文件 + nginx 配置（tar 放临时目录，别留在项目根）
+docker save blog-app -o "$env:TEMP\blog-app.tar"
+scp "$env:TEMP\blog-app.tar" root@<服务器IP>:/root/
+scp compose.yaml root@<服务器IP>:/opt/blog/compose.yaml
+scp nginx.conf root@<服务器IP>:/opt/blog/nginx.conf
+Remove-Item "$env:TEMP\blog-app.tar"
+```
+
+### 启动与验收（服务器）
+
+```bash
+docker load -i /root/blog-app.tar && rm /root/blog-app.tar
+cd /opt/blog && docker compose up -d
+docker compose exec web php artisan migrate --force   # 首次部署或本次含迁移时
+curl -I http://127.0.0.1/posts                        # 200 = 服务器内部验收通过
+```
+
+本地从外部验收：`curl.exe -I http://<服务器IP>/posts` 应返回 `200` 且 `Server: nginx`。
+
+### 日常更新
+
+改完代码重复上面「发布 + 启动」两节即可。`docker compose up -d` 幂等：镜像变了只重建 web 容器，MySQL 连卷不动。注意 `nginx.conf` 挂载的是文件——**必须先传到服务器再启动容器**，路径不存在时 Docker 会自动建一个目录占位导致启动报错。
+
 ## 运行测试
 
 ```powershell
