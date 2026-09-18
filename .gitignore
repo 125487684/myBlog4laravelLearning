@@ -25,3 +25,4 @@ Thumbs.db
 /database/database.sqlite
 CLAUDE.md
 /docs
+*.tar

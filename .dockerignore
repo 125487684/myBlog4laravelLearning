@@ -1,0 +1,14 @@
+.git
+.env
+node_modules
+vendor
+storage/logs/*
+!storage/logs/.gitignore
+public/build
+public/hot
+_ide_helper.php
+.phpstorm.meta.php
+blog-app.tar
+*.tar
+bootstrap/cache/*
+!bootstrap/cache/.gitignore

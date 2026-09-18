@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ $title ?? __('My blogs') }}</title>
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 min-h-screen">
