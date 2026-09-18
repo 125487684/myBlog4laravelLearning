@@ -1,9 +1,15 @@
 services:
   web:
     image: blog-app
-    command: php artisan serve --host=0.0.0.0 --port=8000 --no-reload
-    ports:
-      - "${WEB_PORT:-8080}:8000"
+    build: .
+    command: sh -c "rm -rf /var/www/shared-public/* && cp -r public/. /var/www/shared-public/ && exec php-fpm"
+    volumes:
+      - app-public:/var/www/shared-public
+    healthcheck:
+      test: ["CMD-SHELL", "pidof php-fpm"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     environment:
       APP_ENV: production
       APP_KEY: ${APP_KEY}
@@ -16,9 +22,20 @@ services:
       CACHE_STORE: database
       SESSION_DRIVER: database
       QUEUE_CONNECTION: database
-      PHP_CLI_SERVER_WORKERS: 8
     depends_on:
       - blog-mysql
+    restart: unless-stopped
+
+  blog-nginx:
+    image: nginx:alpine
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - app-public:/var/www/html/public:ro
+    depends_on:
+      web:
+        condition: service_healthy
     restart: unless-stopped
 
   blog-mysql:
@@ -34,3 +51,4 @@ services:
 
 volumes:
   blog-mysql-data:
+  app-public:
