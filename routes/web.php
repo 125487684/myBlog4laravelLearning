@@ -34,9 +34,6 @@ Route::middleware('auth')->group(function () {
         ->name('verification.send');
     Route::get('/email/verify/status', EmailVerificationStatusController::class)
         ->name('verification.status');
-    Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 });
 
 Route::middleware(['auth', 'can:admin'])->group(function () {
@@ -75,3 +72,6 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
 Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
+Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');

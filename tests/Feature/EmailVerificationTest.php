@@ -63,28 +63,27 @@ class EmailVerificationTest extends TestCase
         $this->actingAs($user)->get($url)->assertForbidden();
     }
 
-    public function test_guest_is_redirected_to_login(): void
+    public function test_link_without_session_completes_verification(): void
     {
         $user = User::factory()->unverified()->create();
 
-        $this->get($this->signedUrl($user))->assertRedirect('/login');
+        $this->get($this->signedUrl($user))
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('status');
+
+        $this->assertNotNull($user->fresh()->email_verified_at);
     }
 
-    public function test_valid_link_of_anothor_user_is_rejected(): void
+    public function test_link_opened_by_another_logged_in_user_completes_verification(): void
     {
         $owner = User::factory()->unverified()->create();
         $other = User::factory()->create();
 
-        $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(60), [
-            'id' => $owner->getKey(),
-            'hash' => sha1($owner->getEmailForVerification()),
-        ]);
+        $this->actingAs($other)->get($this->signedUrl($owner))
+            ->assertRedirect(route('posts.index'))
+            ->assertSessionHas('status');
 
-        $this->actingAs($other)->get($url)
-            ->assertRedirect(route('verification.notice'))
-            ->assertSessionHas('error');
-
-        $this->assertNull($owner->fresh()->email_verified_at);
+        $this->assertNotNull($owner->fresh()->email_verified_at);
     }
 
     public function test_unverified_user_connot_create_post(): void
@@ -145,5 +144,22 @@ class EmailVerificationTest extends TestCase
 
         $this->actingAs($user)->post('/email/verification-notification')
             ->assertStatus(429);
+    }
+
+    public function test_status_endpoint_returns_json_for_api_clients(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->getJson(route('verification.status'))
+            ->assertOk()
+            ->assertJson(['verified' => false]);
+
+        $user->markEmailAsVerified();
+
+        $this->actingAs($user)
+            ->getJson(route('verification.status'))
+            ->assertOk()
+            ->assertJson(['verified' => true]);
     }
 }

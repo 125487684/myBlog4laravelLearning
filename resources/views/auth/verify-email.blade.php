@@ -61,7 +61,9 @@
         <script>
             (function () {
                 const poll = setInterval(function () {
-                    fetch(@json(route('verification.status')))
+                    fetch(@json(route('verification.status')), {
+                        headers: { 'Accept': 'application/json' },
+                    })
                         .then(function (response) { return response.json(); })
                         .then(function (data) {
                             if (data.verified) {

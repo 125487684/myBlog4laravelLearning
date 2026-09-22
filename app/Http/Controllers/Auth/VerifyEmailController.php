@@ -12,11 +12,6 @@ class VerifyEmailController extends Controller
 {
     public function __invoke(Request $request, int $id, string $hash)
     {
-        if (Auth::id() !== $id) {
-            return redirect()->route('verification.notice')
-                ->with('error', __('You are not the recipient of this verification link. Please log in with the correct account.'));
-        }
-
         $user = User::findOrFail($id);
 
         if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
@@ -27,6 +22,16 @@ class VerifyEmailController extends Controller
             event(new Verified($user));
         }
 
-        return redirect()->route('posts.index');
+        if (Auth::id() === $id) {
+            return redirect()->route('posts.index');
+        }
+
+        if (! Auth::check()) {
+            return redirect()->route('login')
+                ->with('status', __('Your email has been verified. Please log in to continue.'));
+        }
+
+        return redirect()->route('posts.index')
+            ->with('status', __('This email address has been verified.'));
     }
 }
