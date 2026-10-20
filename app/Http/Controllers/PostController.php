@@ -46,7 +46,18 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('posts.show', ['post' => $post]);
+        $post->loadCount('comments');
+
+        $comments = $post->comments()
+            ->whereNull('parent_id')
+            ->with('user', 'replies.user')
+            ->latest()
+            ->paginate(10);
+
+        return view('posts.show', [
+            'post' => $post,
+            'comments' => $comments,
+        ]);
     }
 
     /**
