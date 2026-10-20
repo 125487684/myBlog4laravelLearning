@@ -24,6 +24,7 @@ Homestead.yaml
 Thumbs.db
 /database/database.sqlite
 CLAUDE.md
+AGENTS.md
 /docs
 *.tar
 /compose.override.y*ml
