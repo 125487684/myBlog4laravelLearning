@@ -14,3 +14,26 @@ html {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* <dialog> 弹层入场动画：内容浮起 + 遮罩淡入，消除 showModal 的突兀感 */
+dialog[open] {
+    animation: dialog-pop 0.18s ease-out;
+}
+
+dialog::backdrop {
+    animation: dialog-fade 0.18s ease-out;
+}
+
+@keyframes dialog-pop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+}
+
+@keyframes dialog-fade {
+    from {
+        opacity: 0;
+    }
+}
+
