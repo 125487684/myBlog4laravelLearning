@@ -10,6 +10,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+      start_period: 30s
     environment:
       APP_ENV: production
       APP_KEY: ${APP_KEY}
@@ -23,7 +24,8 @@ services:
       SESSION_DRIVER: database
       QUEUE_CONNECTION: database
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
 
   nginx:
@@ -45,6 +47,12 @@ services:
       MYSQL_DATABASE: blog
       MYSQL_USER: blog
       MYSQL_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
     volumes:
       - mysql-data:/var/lib/mysql
     restart: unless-stopped

@@ -118,6 +118,7 @@ Remove-Item "$env:TEMP\blog-app.tar"
 docker load -i /root/blog-app.tar && rm /root/blog-app.tar
 cd /opt/blog && docker compose up -d
 docker compose exec web php artisan migrate --force   # 首次部署或本次含迁移时
+docker compose exec web php artisan admin:promote 你注册的邮箱   # 创建管理员（需该账号先完成邮箱验证）
 curl -I http://127.0.0.1/posts                        # 200 = 服务器内部验收通过
 ```
 
