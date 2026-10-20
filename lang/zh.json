@@ -41,6 +41,8 @@
     "A fresh verification link has been sent to your email address.": "新的验证链接已发送到您的邮箱。",
     "Resend verification email": "重新发送验证邮件",
     "Your email has been verified. Please log in to continue.": "邮箱验证成功，请登录继续。",
+    "Comment posted.": "评论已发表。",
+    "Comment deleted.": "评论已删除。",
     "This email address has been verified.": "该邮箱地址已完成验证。",
     "Wrong email or password.": "邮箱或密码错误。",
     "Verified": "已验证",
@@ -67,5 +69,14 @@
     "Update email": "更新邮箱",
     "Changing your email will require verifying the new address.": "修改邮箱后需要重新验证新地址。",
     "Change email or password": "修改邮箱或密码",
-    "New email must be different from the current email.": "新邮箱不能与当前邮箱相同。"
+    "New email must be different from the current email.": "新邮箱不能与当前邮箱相同。",
+    "Comments": "评论",
+    "Write a comment": "写下你的评论…",
+    "Post": "发表",
+    "Reply": "回复",
+    "Reply to :name": "回复 @:name",
+    "Please log in to comment.": "登录后才能评论。",
+    "No comments yet.": "还没有评论。",
+    "Author": "作者",
+    "Cancel": "取消"
 }
