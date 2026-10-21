@@ -35,7 +35,7 @@ class CommentController extends Controller
     /**
      * 删除特定评论
      */
-    public function destory(Post $post, Comment $comment)
+    public function destroy(Post $post, Comment $comment)
     {
         abort_unless($comment->post_id === $post->id, 404);
 
