@@ -78,5 +78,11 @@
     "Please log in to comment.": "登录后才能评论。",
     "No comments yet.": "还没有评论。",
     "Author": "作者",
-    "Cancel": "取消"
+    "Cancel": "取消",
+    "Showing": "第",
+    "to": "至",
+    "of": "条，共",
+    "results": "条",
+    "Pagination Navigation": "分页导航",
+    "Go to page :page": "跳转到第 :page 页"
 }
