@@ -21,6 +21,10 @@ Route::redirect('/', '/posts');
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
+    // 我的文章、我参与的文章
+    Route::get('/my/posts', [PostController::class, 'mine'])->name('posts.mine');
+    Route::get('/my/participated', [PostController::class, 'participated'])->name('posts.participated');
+
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('/settings/password', [PasswordController::class, 'update'])->name('settings.password.update');
@@ -52,6 +56,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+    // 隐藏/恢复自己的文章
+    Route::patch('/posts/{post}/hidden', [PostController::class, 'toggleHidden'])
+        ->name('posts.hidden.toggle');
+
     Route::resource('posts.comments', CommentController::class)
         ->only(['store', 'destroy'])
         ->middleware('throttle:comments');

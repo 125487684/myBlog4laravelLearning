@@ -62,4 +62,12 @@ class PostPolicy
     {
         return false;
     }
+
+    /**
+     * 隐藏、恢复自己的文章
+     */
+    public function hide(User $user, Post $post): bool
+    {
+        return $user->id === $post->user_id;
+    }
 }

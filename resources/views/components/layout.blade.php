@@ -30,6 +30,10 @@
                         <span class="text-xs text-gray-400">▾</span>
                     </summary>
                     <div class="absolute right-0 mt-2 w-full min-w-max bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-10">
+                        <a href="{{ route('posts.mine') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">{{ __('My posts') }}</a>
+                        <a href="{{ route('posts.participated') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">{{ __('My participations') }}</a>
                         <a href="{{ route('settings.edit') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap">{{ __('Settings') }}</a>
                         <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 mt-1 pt-1">

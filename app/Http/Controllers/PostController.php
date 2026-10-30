@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
@@ -14,8 +15,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        // $posts = Post::with('user')->latest()->get();
-        $posts = Post::with('user')->latest()->orderByDesc('id')->paginate(10);
+        // 可见性规则收敛
+        $posts = Post::query()
+            ->visibleTo(Auth::user())
+            ->with('user')
+            ->latest()
+            ->orderByDesc('id')
+            ->paginate(10);
 
         return view('posts.index', ['posts' => $posts]);
     }
@@ -46,6 +52,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        // 隐藏文章对作者、管理员之外返回404；
+        if ($post->hidden_at && ! Post::visibleTo(Auth::user())->whereKey($post->getKey())->exists()) {
+            abort(404);
+        }
+
         $post->loadCount('comments');
 
         $comments = $post->comments()
@@ -92,5 +103,53 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route('posts.index');
+    }
+
+    /**
+     * 切换文章隐藏状态
+     */
+    public function toggleHidden(Post $post)
+    {
+        $this->authorize('hide', $post);
+
+        $post->hidden_at = $post->hidden_at ? null : now();
+        $post->save();
+
+        return redirect()->route('posts.show', $post)
+            ->with('status', $post->hidden_at ? __('Post hidden.') : __('Post unhidden.'));
+    }
+
+    /**
+     * 我发布的
+     */
+    public function mine()
+    {
+        $posts = Auth::user()->posts()
+            ->latest()
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        return view('posts.mine', ['posts' => $posts]);
+    }
+
+    /**
+     * 我参与的
+     */
+    public function participated()
+    {
+        $user = Auth::user();
+
+        $posts = Post::query()
+            ->visibleTo($user)
+            ->where(function (Builder $q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('comments', fn ($c) => $c->where('user_id', $user->id));
+            })
+            ->with('user')
+            ->latest()
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        return view('posts.participated', ['posts' => $posts]);
     }
 }

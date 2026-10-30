@@ -4,7 +4,12 @@
     <a href="{{ route('posts.index') }}" class="text-sm text-blue-600 hover:underline">&larr; {{ __('Back to list') }}</a>
 
     <article class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mt-4">
-        <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ $post->title }}</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-3">
+            {{ $post->title }}
+            @if ($post->hidden_at)
+                <span class="ml-2 inline-block align-middle rounded bg-gray-100 px-2 py-0.5 text-base font-medium text-gray-500">{{ __('Hidden') }}</span>
+            @endif
+        </h1>
         <p class="text-sm text-gray-500 pb-6 mb-6 border-b border-gray-100">
             {{ $post->user->name }} · {{ $post->created_at->format('Y-m-d') }}
         </p>
@@ -15,6 +20,17 @@
             <div class="mt-6 pt-6 border-t border-gray-100 flex items-center gap-6">
                 <a href="{{ route('posts.edit', $post) }}"
                    class="leading-8 text-sm font-medium text-blue-600 hover:underline">{{ __('Edit') }}</a>
+                @can('hide', $post)
+                    {{-- 可见性是可逆开关，无需确认弹窗 --}}
+                    <form method="POST" action="{{ route('posts.hidden.toggle', $post) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                                class="leading-8 text-sm font-medium text-gray-500 hover:text-gray-800">
+                            {{ $post->hidden_at ? __('Unhide post') : __('Hide post') }}
+                        </button>
+                    </form>
+                @endcan
                 <form method="POST" action="{{ route('posts.destroy', $post) }}"
                       onsubmit="return confirmSubmit(this)">
                     @csrf

@@ -84,5 +84,15 @@
     "of": "条，共",
     "results": "条",
     "Pagination Navigation": "分页导航",
-    "Go to page :page": "跳转到第 :page 页"
+    "Go to page :page": "跳转到第 :page 页",
+    "My posts": "我的文章",
+    "My participations": "我的参与",
+    "Hidden": "已隐藏",
+    "Hide post": "隐藏文章",
+    "Unhide post": "取消隐藏",
+    "Post hidden.": "文章已隐藏。",
+    "Post unhidden.": "文章已恢复显示。",
+    "No posts yet.": "还没有文章。",
+    "No participations yet.": "还没有参与过的文章。",
+    "Posts you authored or commented on.": "你发表过的、以及评论或回复过的文章。"
 }
