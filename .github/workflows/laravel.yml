@@ -1,0 +1,101 @@
+name: Laravel
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# 两个 job 分别在 SQLite 与 MySQL 上跑完整测试套件。
+# SQLite 快、零依赖，覆盖绝大多数逻辑；MySQL 用于暴露引擎差异
+# （严格模式下的 Data too long、ALTER COLUMN 迁移、排序规则等）。
+# GitHub Actions 不支持 YAML 锚点，重复步骤无法抽取，属正常写法。
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          # 与 composer.json 的 php ^8.2 要求及 Dockerfile 的 php:8.2-fpm 保持一致
+          php-version: '8.2'
+
+      - uses: actions/setup-node@v4
+        with:
+          # 与 Dockerfile 阶段一的 node:22-alpine 保持一致
+          node-version: '22'
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      # public/build 不在版本库中，而 @vite 渲染必须读取 manifest，否则测试直接抛
+      # ViteManifestNotFoundException（框架无测试环境跳过逻辑）
+      - name: Build frontend assets
+        run: npm ci && npm run build
+
+      # 不在此处覆盖 DB_* 变量：交给 phpunit.xml 的 sqlite :memory: 配置
+      - name: Execute tests (SQLite)
+        run: php artisan test
+
+  mysql-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: blog_testing
+        ports:
+          - 3306:3306
+        # 等待 MySQL 真正就绪再跑测试，避免连接被拒
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '8.2'
+          # setup-php 默认扩展集不含 MySQL 驱动，必须显式声明
+          extensions: pdo_mysql
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prepare application
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          php artisan key:generate
+          chmod -R 777 storage bootstrap/cache
+          npm ci && npm run build
+
+      # phpunit.xml 未使用 force="true"，这里的 env 会覆盖其 sqlite 配置。
+      # RefreshDatabase 会清空 blog_testing 的全部表——这是 CI 专用一次性库，安全
+      - name: Execute tests (MySQL)
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: blog_testing
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan test
